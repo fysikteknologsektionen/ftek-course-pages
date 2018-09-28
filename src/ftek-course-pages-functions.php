@@ -134,6 +134,16 @@ function course_pretty_study_periods($ID = NULL)
 function course_pretty_links($ID = NULL)
 {
     $website_url = course_website($ID);
+    /* Update year automatically on math.chalmers.se links */ 
+    if (preg_match('/(\d{2})(\d{2})/', $website_url, $matches) && ((int) $matches[1]+1) === ((int) $matches[2]) ) {
+        $year = (int) date('y');
+        $month = (int) date('n');
+        $isSpring = (int) ($month < 8);
+        $year = $year - $isSpring;
+        $years = $year.($year+1);
+        $website_url = preg_replace('/\/\d{4}/', '/'.$years, $website_url);
+    }
+
     $pingpong_url = course_pingpong($ID);
     $evaluation_url = course_evaluation($ID);
     $outcomes_url = course_outcomes($ID);

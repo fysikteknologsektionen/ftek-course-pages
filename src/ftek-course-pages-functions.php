@@ -147,7 +147,7 @@ function course_pretty_links($ID = NULL)
     $pingpong_url = course_pingpong($ID);
     $evaluation_url = course_evaluation($ID);
     $outcomes_url = course_outcomes($ID);
-    $statistics_url = 'http://tenta.bowald.se/#/search/statistics/' . course_code($ID) . '/chart';
+    $statistics_url = 'https://ftek.se/stats/' . course_code($ID);
     
     if ( ! ($website_url || $pingpong_url || $evaluation_url || $outcomes_url) ) {
         return;

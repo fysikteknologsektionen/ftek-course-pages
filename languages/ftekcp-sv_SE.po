@@ -28,8 +28,8 @@ msgstr "hp"
 msgid "Course website url"
 msgstr "Kurshemsidans URL"
 
-msgid "PingPong page url"
-msgstr "PingPong-sidans URL"
+msgid "Canvas page url"
+msgstr "Canvas-sidans URL"
 
 msgid "Course representatives"
 msgstr "Kursutvärderare"

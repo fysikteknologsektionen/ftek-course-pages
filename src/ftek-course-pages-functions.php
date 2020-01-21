@@ -62,9 +62,9 @@ function course_credit($ID = NULL)
     return floatval($no_comma_credit) . ' ' . __('credits', 'ftekcp');
 }
 
-function course_pingpong($ID = NULL)
+function course_canvas($ID = NULL)
 {
-    return get_ftek_course_field($ID, 'pingpong')[0];
+    return get_ftek_course_field($ID, 'canvas')[0];
 }
 
 function course_outcomes($ID = NULL)
@@ -144,18 +144,18 @@ function course_pretty_links($ID = NULL)
         $website_url = preg_replace('/\/\d{4}/', '/'.$years, $website_url);
     }
 
-    $pingpong_url = course_pingpong($ID);
+    $canvas_url = course_canvas($ID);
     $evaluation_url = course_evaluation($ID);
     $outcomes_url = course_outcomes($ID);
     $statistics_url = 'https://ftek.se/stats/' . course_code($ID);
     
-    if ( ! ($website_url || $pingpong_url || $evaluation_url || $outcomes_url) ) {
+    if ( ! ($website_url || $canvas_url || $evaluation_url || $outcomes_url) ) {
         return;
     }
     $result = '<ul>';
     $links = array(
         'course-website' => array( __('Course website', 'ftekcp'), $website_url ),
-        'course-pingpong' => array( 'PingPong', $pingpong_url ),
+        'course-canvas' => array( 'Canvas', $canvas_url ),
         'course-evaluation' => array( __('Course evaluation', 'ftekcp'), $evaluation_url ),
         'course-outcomes' => array( __('Intended course outcomes', 'ftekcp'), $outcomes_url ),
         'course-statistics' => array( __('Exam statistics', 'ftekcp'), $statistics_url ),

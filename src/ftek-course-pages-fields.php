@@ -39,8 +39,8 @@ function ftek_courses_metaboxes( $meta_boxes ) {
                 'placeholder' => 'http://www.math.chalmers.se/Math/Grundutb/CTH/tma970/1314/'
 			),
 			array(
-				'name' => __('PingPong page url', 'ftekcp'),
-				'id' => $prefix . 'pingpong',
+				'name' => __('Canvas page url', 'ftekcp'),
+				'id' => $prefix . 'canvas',
 				'type' => 'text_url'
 			),
 			array(

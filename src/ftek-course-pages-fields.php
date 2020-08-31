@@ -56,7 +56,7 @@ function ftek_courses_metaboxes( $meta_boxes ) {
 			array(
 				'name' => __('Course representatives', 'ftekcp'),
 				'id' => $prefix . 'representatives',
-                'desc' => __('Enter cids', 'ftekcp'),
+                'desc' => __('Enter name and CID separated by comma, e.g. "Emil Emilsson,emile"', 'ftekcp'),
 				'type' => 'text_repeat'
 			),
 			array(

@@ -34,8 +34,8 @@ msgstr "Canvas-sidans URL"
 msgid "Course representatives"
 msgstr "Kursutvärderare"
 
-msgid "Enter cids"
-msgstr "Mata in cids"
+msgid "Enter name and CID separated by comma, e.g. \"Emil Emilsson,emile\""
+msgstr "Skriv in namn och CID separerat av komma, t.ex. \"Emil Emilsson,emile\""
 
 msgid "Study period"
 msgstr "Läsperiod"

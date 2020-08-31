@@ -178,26 +178,13 @@ function course_pretty_representatives($ID = NULL)
     return "<ul>$list</ul>";
 }
 
-function course_print_rep($cid)
+function course_print_rep($rep)
 {
-    $user = get_user_by('login', $cid);
-    if ($user) {
-        $first = $user->user_firstname;
-        $last  = $user->user_lastname;
-        $name = "$first $last";
-        $email = $user->user_email;
-    } 
-    else {
-        set_include_path(get_include_path().PATH_SEPARATOR.'/usr/local/spidera/php/');
-        include_once('ldap_functions.php');
-        if ( class_exists('LDAPUser') ) {
-            $ldap_user = new LDAPUser($cid);
-            $name = $ldap_user->full_name;
-            $email = $ldap_user->email;
-        }
-        else {
-            return '';
-        }
+    $userData = explode(',', $rep);
+    $name = $userData[0];
+    $email = $userData[1] . "@student.chalmers.se";
+    if(!$name || !$email) {
+        return '';
     }
     return "<li>"
             . "<a href='mailto:$email'>"

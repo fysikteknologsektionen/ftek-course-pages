@@ -147,7 +147,7 @@ function course_pretty_links($ID = NULL)
     $canvas_url = course_canvas($ID);
     $evaluation_url = course_evaluation($ID);
     $outcomes_url = course_outcomes($ID);
-    $statistics_url = 'https://ftek.se/stats/' . course_code($ID);
+    $statistics_url = 'https://stats.ftek.se/' . course_code($ID);
     
     if ( ! ($website_url || $canvas_url || $evaluation_url || $outcomes_url) ) {
         return;

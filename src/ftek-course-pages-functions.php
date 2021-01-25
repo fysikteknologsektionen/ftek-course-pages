@@ -181,9 +181,10 @@ function course_pretty_representatives($ID = NULL)
 function course_print_rep($rep)
 {
     $userData = explode(',', $rep);
-    $name = $userData[0];
-    $email = $userData[1] . "@student.chalmers.se";
-    if(!$name || !$email) {
+    $cid = $userData[0];
+    $name = empty($userData[1]) ? $cid : $userData[1];
+    $email = $cid . "@student.chalmers.se";
+    if(!$name) {
         return '';
     }
     return "<li>"

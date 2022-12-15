@@ -8,6 +8,7 @@ Version: 1.1.1
 Text Domain: ftekcp
 Domain Path: /languages
 GitHub Plugin URI: Fysikteknologsektionen/ftek-course-pages
+Primary Branch: main
 */
 
 require_once('src/ftek-course-pages-init.php');

@@ -200,7 +200,7 @@ function course_vbl($ID = NULL)
     if (!function_exists('ftek_documents_listing')) {
         echo 'You have to enable the plugin ftek_documents.';
     }
-    $course_code = strtolower( course_code($ID) );
+    $course_code = trim( strtolower( course_code($ID) ) );
     if (!$course_code) {
         return '';
     }

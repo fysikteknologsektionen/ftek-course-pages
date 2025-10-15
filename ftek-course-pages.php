@@ -4,7 +4,7 @@
 Plugin Name: Ftek Course Pages
 Description: Creates custom post type "Course pages" which contain info about courses at F/TM on Chalmers
 Author: Pontus Granström
-Version: 1.1.3
+Version: 1.1.4
 Text Domain: ftekcp
 Domain Path: /languages
 GitHub Plugin URI: Fysikteknologsektionen/ftek-course-pages

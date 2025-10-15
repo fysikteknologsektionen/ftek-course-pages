@@ -24,6 +24,13 @@ function timeEdit_url($programme, $programme_year)
     return get_option(FTEKCP_SCHEDULE_SETTINGS)[$programme . $programme_year];
 }
 
+function timeEdit_link_shortcode($atts, $content, $tag)
+{
+    $programme = $atts['programme'];
+    $year = $atts['year'];
+    return '<a href= "' . timeEdit_url($programme, $year) . '">' . $programme . '</a>';
+}
+add_shortcode('timeEdit_url', 'timeEdit_links_shortcode');
 
 /*
  * Tags

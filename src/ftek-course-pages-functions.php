@@ -30,7 +30,7 @@ function timeEdit_link_shortcode($atts, $content, $tag)
     $year = $atts['year'];
     return '<a href= "' . timeEdit_url($programme, $year) . '">' . $programme . '</a>';
 }
-add_shortcode('timeEdit_url', 'timeEdit_links_shortcode');
+add_shortcode('timeEdit_url', 'timeEdit_link_shortcode');
 
 /*
  * Tags

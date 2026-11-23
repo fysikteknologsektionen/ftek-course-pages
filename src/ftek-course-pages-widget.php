@@ -8,126 +8,136 @@ function register_ftek_course_widget() {
 
 class FtekCourseWidget extends WP_Widget {
 
-	function FtekCourseWidget() {
-		// Instantiate the parent object
+	public function __construct() {
 		parent::__construct(
-            'ftek_course_widget', 
-            __('Ftek Course Widget', 'ftekcp'),
-            array( 
-                'description' => __('Shows current courses for F and TM at Chalmers University', 'ftekcp'),
-                'classname' => 'ftek_course_widget',
-            )
-        );
+			'ftek_course_widget',
+			__( 'Ftek Course Widget', 'ftekcp' ),
+			array(
+				'description' => __( 'Shows current courses for F and TM at Chalmers University', 'ftekcp' ),
+				'classname'   => 'ftek_course_widget',
+			)
+		);
 	}
 
-	function widget( $args, $instance ) {
-        // This widget is useless if you're not Swedish
-        // as it only shows first three years
-        if (qtrans_getLanguage() != 'sv') {
-            return '';
-        }
-        // We have to do this
-        echo $args['before_widget'];
-        $title = __('Courses', 'ftekcp');
-        $title = apply_filters( 'widget_title', $title);
-        echo $args['before_title'] . '<a href="/kurser" title="'.__('More courses', 'ftekcp').'">' .$title. '</a>' . $args['after_title'];
-        
-        // Our stuff begins
-        $prefix = FTEK_COURSE_PREFIX;
-        $current_study_period = current_study_period();
-        
-        for ($year=1; $year <= 3; $year++) { 
-            
-            $query = course_query($year);
-            
-            echo '<h3>';
-            echo __('Year', 'ftekcp') . ' ' . $year; 
-            echo ' (';
-            echo __('Schedule', 'ftekcp') . ' ';
-            echo join(", ", timeEdit_links($year));
-            echo ')';
-            echo '</h3>';
-            
-            if ( $query->have_posts() ) {
-                echo '<ul>';
-            	while ( $query->have_posts() ) {
-            		$query->the_post();
-                    
-                    // For some reason I can't filter this
-                    // in the query... Don't know why.
-                    if ( ! in_array(
-                        $current_study_period, 
-                        course_study_periods()
-                    )) continue;
-                        
-            		echo '<li><a href="'
-                         . get_permalink() 
-                         . '">'
-                         . get_the_title() 
-                         . '</a></li>';
-            	}
-                echo '</ul>';
-            } else {
-            	// no posts found
-            }
-        }
+	public function widget( $args, $instance ) {
+		// This widget is only useful in Swedish
+		// as it only shows first three years
+		if ( ! function_exists( 'qtrans_getLanguage' ) || 'sv' !== qtrans_getLanguage() ) {
+			return;
+		}
 
-        $course_page = get_page_by_path("kurser");
-        if ($course_page) {
-            $url = get_permalink( $course_page->ID );
-            echo "<a class='more-link more-courses-link' href='$url'>";
-            echo __('More courses', 'ftekcp') .  '&#8594;';
-            echo "</a>";
-        }
-        echo $args['after_widget'];
+		echo $args['before_widget']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+
+		$title = apply_filters( 'widget_title', __( 'Courses', 'ftekcp' ), $instance, $this->id_base );
+
+		if ( $title ) {
+			$title_url = home_url( '/kurser' );
+
+			echo $args['before_title']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+			printf(
+				'<a href="%1$s" title="%2$s">%3$s</a>',
+				esc_url( $title_url ),
+				esc_attr__( 'More courses', 'ftekcp' ),
+				esc_html( $title )
+			);
+			echo $args['after_title']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		}
+
+		$current_study_period = current_study_period();
+
+		for ( $year = 1; $year <= 3; $year++ ) {
+			$query = course_query( $year );
+
+			echo '<h3>';
+			echo esc_html( __( 'Year', 'ftekcp' ) . ' ' . $year . ' (' . __( 'Schedule', 'ftekcp' ) . ' ' );
+			echo wp_kses(
+				implode( ', ', timeEdit_links( $year ) ),
+				array( 'a' => array( 'href' => array() ) )
+			);
+			echo ')</h3>';
+
+			if ( $query->have_posts() ) {
+				echo '<ul>';
+
+				while ( $query->have_posts() ) {
+					$query->the_post();
+
+					if ( ! in_array( $current_study_period, course_study_periods(), true ) ) {
+						continue;
+					}
+
+					printf(
+						'<li><a href="%1$s">%2$s</a></li>',
+						esc_url( get_permalink() ),
+						esc_html( get_the_title() )
+					);
+				}
+
+				echo '</ul>';
+			}
+
+			wp_reset_postdata();
+		}
+
+		$course_page = get_page_by_path( 'kurser' );
+
+		if ( $course_page ) {
+			printf(
+				'<a class="more-link more-courses-link" href="%1$s">%2$s &#8594;</a>',
+				esc_url( get_permalink( $course_page->ID ) ),
+				esc_html__( 'More courses', 'ftekcp' )
+			);
+		}
+
+		echo $args['after_widget']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	}
 
-	function update( $new_instance, $old_instance ) {
-		// Save widget options
+	public function update( $new_instance, $old_instance ) {
+		// This widget has no configurable settings.
+		return is_array( $old_instance ) ? $old_instance : array();
 	}
 
-	function form( $instance ) {
-		// Output admin widget options form
+	public function form( $instance ) {
+		// This widget has no configurable settings.
 	}
 }
 
+function course_query( $programme_year ) {
+	$args = array(
+		'post_type'      => 'ftek_course_page',
+		'posts_per_page' => -1,
+		'meta_key'       => FTEK_COURSE_PREFIX . 'attendants',
+		'orderby'        => 'meta_value_num',
+		'order'          => 'DESC',
+		'meta_query'     => array(
+			array(
+				'key'   => FTEK_COURSE_PREFIX . 'programme_year',
+				'value' => (string) $programme_year,
+			),
+			array(
+				'key'     => FTEK_COURSE_PREFIX . 'attendants',
+				'value'   => 10,
+				'type'    => 'NUMERIC',
+				'compare' => '>=',
+			),
+		),
+	);
 
-
-function course_query($programme_year)
-{
-    $args = array
-    (
-        'post_type' => 'ftek_course_page',
-        'nopaging' => true,
-        'meta_key' => FTEK_COURSE_PREFIX . 'attendants',
-        'orderby' => 'meta_value_num',
-        'order' => 'DESC',
-        'meta_query' => array(
-            array(
-                'key' => FTEK_COURSE_PREFIX . 'programme_year',
-                'value' => "$programme_year",
-            ),
-            array(
-                'key' => FTEK_COURSE_PREFIX . 'attendants',
-                'value' => 10,
-                'type' => 'numeric',
-                'compare' => '>='
-            )
-        )
-    );
-    return new WP_Query($args);
+	return new WP_Query( $args );
 }
 
+function timeEdit_links( $programme_year ) {
+	$programmes = array( 'F', 'TM' );
 
-
-function timeEdit_links($programme_year)
-{
-    $programmes = array('F', 'TM'); 
-    
-    return array_map(function($programme) use ($programme_year) {
-        $timeEdit_url = timeEdit_url($programme, $programme_year);
-        return '<a href="' . $timeEdit_url . '">'
-                 . $programme // . $programme_year
-             . '</a>';
-    }, $programmes);
+	return array_map(
+		function ( $programme ) use ( $programme_year ) {
+			$url = timeEdit_url( $programme, $programme_year );
+			return sprintf(
+				'<a href="%1$s">%2$s</a>',
+				esc_url( $url ),
+				esc_html( $programme )
+			);
+		},
+		$programmes
+	);
 }
